@@ -1,7 +1,7 @@
 package com.jsonparserdemo.database;
 
 /**
- * Created by hirenk on 2/27/16.
+ * Created by hirenk
  * Set filed name and data type
  */
 public class DatabaseColumn {
@@ -16,6 +16,17 @@ public class DatabaseColumn {
 
     private String referenceColumn;
 
+    private boolean isUnique;
+    private boolean isNull;
+
+    public boolean isUnique() {
+        return isUnique;
+    }
+
+    public boolean isNull() {
+        return isNull;
+    }
+
     public DatabaseColumn(String name, ColumnDataType columnDataType) {
         this.name = name;
         this.columnDataType = columnDataType;
@@ -25,6 +36,13 @@ public class DatabaseColumn {
         this.name = name;
         this.columnDataType = columnDataType;
         this.isPrimaryKey = isPrimaryKey;
+    }
+
+    public DatabaseColumn(String name, ColumnDataType columnDataType, boolean isUnique,boolean isNull) {
+        this.name = name;
+        this.columnDataType = columnDataType;
+        this.isUnique = isUnique;
+        this.isNull = isNull;
     }
 
     public DatabaseColumn(String name, ColumnDataType columnDataType, boolean isPrimaryKey, String referenceTable, String referenceColumn) {

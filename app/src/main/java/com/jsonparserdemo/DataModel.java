@@ -2,6 +2,7 @@ package com.jsonparserdemo;
 
 import android.util.Log;
 
+import com.jsonparserdemo.database.DemoDatabase;
 import com.jsonparserdemo.service.DataInterface;
 
 import org.json.JSONArray;
@@ -85,7 +86,7 @@ public class DataModel {
     }
 
 
-    public static List<DataModel>  dataParse(JSONArray jsonArray) {
+    public static DataModel  dataParse(JSONArray jsonArray, DemoDatabase database) {
         if(jsonArray != null && jsonArray.length() > 0) {
             List<DataModel> dataModelList = new ArrayList<>();
             List<DataModel.Choices> choicesList = new ArrayList<>();
@@ -97,7 +98,7 @@ public class DataModel {
                     for (int j = 0 ; j < choices.length(); j++) {
                         DataModel.Choices choices1 = dataModel.new Choices();
                         JSONObject object = choices.getJSONObject(j);
-                        choices1.setChoice(object.getString("choice"));
+                        choices1.setUrl(object.getString("url"));
                         choicesList.add(choices1);
                         Log.d("TAG","choice-->" + object.getString("choice"));
                     }
@@ -110,7 +111,7 @@ public class DataModel {
                     Log.d("TAG","Size of the data model list -->" +  dataModelList.get(0).getQuestion());
                     Log.d("TAG","Size of the choices List  -->" +  dataModel.getChoicesList().get(0).getChoice());
 
-                    return dataModelList;
+                    return dataModel;
 
                 } catch (JSONException e) {
                     e.printStackTrace();

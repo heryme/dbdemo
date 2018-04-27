@@ -4,14 +4,18 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
+import com.jsonparserdemo.DataModel;
 import com.jsonparserdemo.constant.DbInfo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.jsonparserdemo.constant.DbInfo.TABLE_NAME;
 
 /**
  * Created by Rid's Patel on 21-04-2018.
@@ -33,7 +37,7 @@ public class DemoDatabase extends DatabaseService {
     @Override
     protected String getTableName() {
 
-        return DbInfo.TABLE_NAME;
+        return TABLE_NAME;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class DemoDatabase extends DatabaseService {
         //0) generInfoKeyId
         databaseColumns.add(new DatabaseColumn(DbInfo.TABLE_COLUMN[0], ColumnDataType.INTEGER, true));
         //1)Created_latLng
-        databaseColumns.add(new DatabaseColumn(DbInfo.TABLE_COLUMN[1], ColumnDataType.TEXT));
+        databaseColumns.add(new DatabaseColumn(DbInfo.TABLE_COLUMN[1], ColumnDataType.TEXT,true,true));
         //2)Created_dateTime
         databaseColumns.add(new DatabaseColumn(DbInfo.TABLE_COLUMN[2], ColumnDataType.DATETIME));
         //3)Updated_latLng
@@ -53,6 +57,11 @@ public class DemoDatabase extends DatabaseService {
         return databaseColumns;
     }
 
+
+    /**
+     * Insert Singal data
+     * @return
+     */
     public long insertUpdateData() {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -71,7 +80,7 @@ public class DemoDatabase extends DatabaseService {
         // if(achcGeneralInfoItem.getKey_Id().length() == 0) {
 
         //1)Created_latLng
-        return db.insert(DbInfo.TABLE_NAME, null, values);
+        return db.insert(TABLE_NAME, null, values);
 
         /*} else { /*//**Update row *//**//*
 
@@ -81,13 +90,59 @@ public class DemoDatabase extends DatabaseService {
     }
 
 
+    /**
+     * Insert Bulck Data
+     * @param list
+     */
+    public void addBulckData(List<DataModel.Choices> list) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        String in = "INSERT OR REPLACE INTO" + " " + TABLE_NAME  +"(" + DbInfo.TABLE_COLUMN[1] + "," + DbInfo.TABLE_COLUMN[2] + "," + DbInfo.TABLE_COLUMN[3] + ")VALUES(?,?,?);";
+        Log.d("TAG","In-->" + in);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+            try {
+                ContentValues values = new ContentValues();
+                for (DataModel.Choices c : list) {
+                    values.put(DbInfo.TABLE_COLUMN[1], c.getUrl());
+                    values.put(DbInfo.TABLE_COLUMN[2], sdf.format(new Date()));
+                    values.put(DbInfo.TABLE_COLUMN[3], c.getUrl());
+                    db.insert(DbInfo.TABLE_NAME, null, values);
+                }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+        }
+
+
+        /*SQLiteStatement statement = database.compileStatement(in);
+        database.beginTransaction();
+        try {
+            for (DataModel.Choices c : list) {
+                statement.clearBindings();
+                statement.bindString(1, c.getUrl());
+                statement.bindString(2, sdf.format(new Date()));
+                statement.bindString(3, "jsn");
+               // statement.bindLong(2, c.getCityName());
+                statement.execute();
+
+            }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
+*/
+
+
     public void getAllACHCList() {
 
         // List<AchcGeneralInfoItem> achcGeneralInfoItemList = new ArrayList<AchcGeneralInfoItem>();
-        String selectQuery = "SELECT * FROM " + DbInfo.TABLE_NAME;
+        String selectQuery = "SELECT * FROM " + TABLE_NAME;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
+        Log.d("TAG","Cursor Size--->" + c.getCount());
 
         /**
          * looping through all rows and adding to list
@@ -105,10 +160,37 @@ public class DemoDatabase extends DatabaseService {
 
                 Log.d("TAG","ID--->" + id);
                 Log.d("TAG","latLog--->" + latLog);
-                Log.d("TAG","date--->" + date);
+                ///Log.d("TAG","date--->" + date);
 
             } while (c.moveToNext());
         }
         c.close();
+    }
+
+    /***
+     * Delete Record
+     */
+    public int updateRecord() {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DbInfo.TABLE_COLUMN[1], "JSN");
+
+        //String where = Achc.ACHCGeneralInfo.TABLE_COLUMN[0] +"="+achcGeneralInfoItem.getKey_Id();
+        String where = DbInfo.TABLE_COLUMN[0] +"="+"8";
+        return db.update(DbInfo.TABLE_NAME, values, where, null);
+
+    }
+
+    /***
+     * Delete Record
+     */
+    public void deleteRecord() {
+        /*SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("delete from "+ Achc.ACHCGeneralInfo.TABLE_NAME +" where "+ Achc.ACHCGeneralInfo.TABLE_COLUMN[0]+"='"+ keyId +"'");
+        db.close();
+        */
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("delete from "+ DbInfo.TABLE_NAME +" where "+ DbInfo.TABLE_COLUMN[0]+"='"+ "3" +"'");
+        db.close();
     }
 }

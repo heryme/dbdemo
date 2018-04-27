@@ -33,9 +33,12 @@ public class MainActivity extends AppCompatActivity {
         btnClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // callApi();
-                demoDatabase.insertUpdateData();
+                callApi();
                 demoDatabase.getAllACHCList();
+                demoDatabase.updateRecord();
+                demoDatabase.deleteRecord();
+                //demoDatabase.insertUpdateData();
+                //demoDatabase.getAllACHCList();
             }
         });
     }
@@ -45,9 +48,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(JSONArray response) {
                 //dataInterface.sendData(DataModel.dataParse(response));
-                DataModel.dataParse(response);
-                Intent intent = new Intent(MainActivity.this,Main2Activity.class);
-                startActivity(intent);
+                DataModel  dataModel = DataModel.dataParse(response,demoDatabase);
+                //DataModel.dataParse(response,demoDatabase);
+                demoDatabase.addBulckData(dataModel.getChoicesList());
+                //Intent intent = new Intent(MainActivity.this,Main2Activity.class);
+                //startActivity(intent);
                 Log.d("Tag",response.toString());
             }
         });
