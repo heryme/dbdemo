@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context="com.jsonparserdemo.activity.MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        android:background="@color/colorPrimary" />
+
+
+
     <Button
         android:id="@+id/btnClick"
         android:layout_width="wrap_content"
