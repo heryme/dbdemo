@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
                 getResources().getString(R.string.test))
                 .setIcon(R.mipmap.ic_launcher)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
         return true;
     }
 
