@@ -17,7 +17,8 @@ public abstract class APIService {
 
     private static final String TAG = APIService.class.getSimpleName();
 
-    public static final String BASE_URL = "http://polls.apiblueprint.org/questions";
+   // public static final String BASE_URL = "http://polls.apiblueprint.org/questions";
+    public static final String BASE_URL = "http://www.mocky.io/v2/59c60b78400000a107b25e09";
 
     public interface Success<T> {
         public void onSuccess(T response);

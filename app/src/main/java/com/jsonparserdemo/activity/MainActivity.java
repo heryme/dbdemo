@@ -1,29 +1,33 @@
 package com.jsonparserdemo.activity;
 
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.imagestoredatabase.SQLiteDemoActivity;
-import com.jsonparserdemo.DataModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.jsonparserdemo.R;
 import com.jsonparserdemo.database.DemoDatabase;
+import com.jsonparserdemo.model_robo_pojo.CategoriesItem;
+import com.jsonparserdemo.model_robo_pojo.VenuesItem;
 import com.jsonparserdemo.service.APIService;
 import com.jsonparserdemo.service.DataInterface;
+import com.jsonparserdemo.service.DemoGsonDataService;
 import com.jsonparserdemo.service.DemoService;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,12 +48,15 @@ public class MainActivity extends AppCompatActivity {
         btnClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                callApiGsonDemo();
                 callApi();
                 demoDatabase.getAllACHCList();
                 demoDatabase.updateRecord();
                 demoDatabase.deleteRecord();
-                //demoDatabase.insertUpdateData();
-                //demoDatabase.getAllACHCList();
+                demoDatabase.insertUpdateData();
+                demoDatabase.getAllACHCList();
+                //Robo Pogo Example Parse Data In Pojo
+                callApiGsonDemo();
             }
         });
     }
@@ -58,16 +65,40 @@ public class MainActivity extends AppCompatActivity {
         DemoService.DemoService(MainActivity.this, new APIService.Success<JSONArray>() {
             @Override
             public void onSuccess(JSONArray response) {
-                //dataInterface.sendData(DataModel.dataParse(response));
-                DataModel  dataModel = DataModel.dataParse(response,demoDatabase);
-                //DataModel.dataParse(response,demoDatabase);
-                demoDatabase.addBulckData(dataModel.getChoicesList());
-                Intent intent = new Intent(MainActivity.this,SQLiteDemoActivity.class);
-                startActivity(intent);
                 Log.d("Tag",response.toString());
             }
         });
     }
+
+
+    private void callApiGsonDemo() {
+        DemoGsonDataService.DemoGsonDataService(MainActivity.this, new APIService.Success<JSONObject>() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                Log.d("Tag",response.toString());
+                GsonBuilder builder = new GsonBuilder();
+                Gson mGson = builder.create();
+
+
+                if(response != null) {
+                    try {
+                        JSONObject res = response.getJSONObject("response");
+                        JSONArray venues = res.getJSONArray("venues");
+                        List<VenuesItem> venuesItems = new ArrayList<>(Arrays.asList(mGson.fromJson(venues.toString(),VenuesItem[].class)));
+                        Log.d("TAG","Size-->" + venuesItems.size());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
+            }
+        });
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

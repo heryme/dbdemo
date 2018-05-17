@@ -15,18 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.MainActivity">
-           </activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activity.Main2Activity" />
         <activity android:name="com.imagestoredatabase.DisplayImageActivity" />
         <activity
             android:name="com.imagestoredatabase.SQLiteDemoActivity"
             android:theme="@style/AppTheme" />
         <activity android:name="com.game_ticket_generator.GameActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
     </application>
